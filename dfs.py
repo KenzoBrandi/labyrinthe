@@ -10,30 +10,53 @@ deplacements = [
         (1, 0),  
         (1, 1)     
     ]
+
+def voisins(x,y, labyrinthe):
+    voisins = []
+    n = len(labyrinthe)
+    for dx, dy in deplacements:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < n and 0 <= ny < n:
+            voisins.append((nx,ny))
+    return voisins
+        
 def voisin_eligible(x, y, labyrinthe):
     cpt = 0
-    n = len(labyrinthe)
-    for dx, dy in deplacements:
-        nx, ny = x + dx, y + dy
-        if 0 <= nx < n and 0 <= ny < n and labyrinthe[nx][ny] == 1:
+    for xc, yc in voisins(x, y, labyrinthe):
+        if labyrinthe[xc][yc] == 1:
             cpt += 1
             if cpt > 1:
-                return False  # plus d’un voisin visité : pas éligible
+                return False  #trop de voisins visités
 
-    # éligible si exactement 1 voisin visité
-    return cpt == 1
+    return cpt == 1  #exactement 1 voisin visité
 
 def voisins_non_visites(x, y, labyrinthe):
-    n = len(labyrinthe)
     voisins_non_visites = []
-    for dx, dy in deplacements:
-        nx, ny = x + dx, y + dy
-        if 0 <= nx < n and 0 <= ny < n and labyrinthe[nx][ny] == 0:
-            if voisin_eligible(nx, ny,labyrinthe):
-                voisins_non_visites.append((nx, ny))
+    for xc, yc in voisins(x, y, labyrinthe):
+        if labyrinthe[xc][yc] == 0 and voisin_eligible(xc, yc,labyrinthe):
+            voisins_non_visites.append((xc, yc))
         
     return voisins_non_visites 
 
+
+
+def point_valide(x, y, labyrinthe):
+    """Déplace (x,y) vers un voisin aléatoire tant que la cellule vaut 0."""
+    while labyrinthe[x][y] == 0:
+        voisins_liste = voisins(x, y, labyrinthe)
+        x, y = voisins_liste[randint(0, len(voisins_liste)-1)]
+    return x, y
+
+def choix_debut_fin(labyrinthe):
+    n = len(labyrinthe)
+
+    # Début : en bas à droite (n-1, n-1)
+    xd, yd = point_valide(n-1, n-1, labyrinthe)
+
+    # Fin : en haut à gauche (0, 0)
+    xf, yf = point_valide(0, 0, labyrinthe)
+
+    return (xd, yd), (xf, yf)
 
 
 def generation_labyrinthe(n):
@@ -43,7 +66,6 @@ def generation_labyrinthe(n):
     y = randint(0,n-1)
     labyrinthe[x][y] = 1 #on marque la cellule comme visitée
     stack = [(x,y)] #ajout dans la pile
-
     while stack:
         x, y = stack[-1]
         voisins = voisins_non_visites(x,y,labyrinthe)
