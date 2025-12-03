@@ -88,7 +88,7 @@ def afficher_carte_couleur(Map, chemin):
     cax = ax.matshow(M_color, cmap=cmap, vmin=0, vmax=vmax)
 
     plt.colorbar(cax)
-    plt.title("Distance au but")
+    plt.suptitle(f"Longueur du chemin solution : {len(chemin)-1}", fontsize=14)
     plt.show()
         
         
