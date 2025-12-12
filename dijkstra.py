@@ -11,25 +11,25 @@ def initialisation_labyrinthe(n):
 def algo_dijkstra(labyrinthe, but):
     n = len(labyrinthe)
     # -1 = mur, None = libre non visité
-    Map = [[-1 if labyrinthe[i][j] == 0 else None for j in range(n)] for i in range(n)]
+    map_distance = [[-1 if labyrinthe[i][j] == 0 else None for j in range(n)] for i in range(n)]
 
     cpt = 0
     i_g, j_g = but
-    Map[i_g][j_g] = 0  # la cellule de but vaut 0
+    map_distance[i_g][j_g] = 0  # la cellule de but vaut 0
     location = [but]    # liste des cellules à traiter
 
     while location:
         next_location = []  # cellules du prochain niveau
         for xi, yi in location:
-            L = voisins(xi, yi, Map)  # voisins de la cellule courante
+            L = voisins(xi, yi, map_distance)  # voisins de la cellule courante
             for xj, yj in L:
-                if Map[xj][yj] is None:
-                    Map[xj][yj] = cpt + 1  # distance depuis la but
+                if map_distance[xj][yj] is None:
+                    map_distance[xj][yj] = cpt + 1  # distance depuis la but
                     next_location.append((xj, yj))  # ajout pour le prochain tour
         location = next_location
         cpt += 1
         
-    return Map  # retourne la map des distances
+    return map_distance  # retourne la map des distances
 
 def carte_directionnelle(Map):
     n = len(Map)
@@ -133,14 +133,14 @@ def evolution_longueur_moyenne(taille_laby_list, nb_essais=10):
 
         
 if __name__ == "__main__":
-    lab, but = initialisation_labyrinthe(15)
-    Map = algo_dijkstra(lab, but)
-    carte = carte_directionnelle(Map)
+    lab, but = initialisation_labyrinthe(50)
+    map_distance = algo_dijkstra(lab, but)
+    carte = carte_directionnelle(map_distance)
     print("Labyrinthe:")
     for ligne in lab:
         print(ligne)
     print("----------\nCarte des distances:")
-    for ligne in Map:
+    for ligne in map_distance:
         print(ligne)
     print("----------\nCarte directionnelle:")
     for ligne in carte:
@@ -153,7 +153,7 @@ if __name__ == "__main__":
     print("De ",depart," à ", but)
     chemin = resolution_labyrinthe(depart,but,carte)
             
-    afficher_carte_couleur(Map,chemin)
+    afficher_carte_couleur(map_distance,chemin)
     
     # Graphique des moyennes des longueurs des chemins solutions
     # N_values = [8, 16, 32, 64, 128, 256, 512]
