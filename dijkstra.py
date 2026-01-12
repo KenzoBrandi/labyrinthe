@@ -154,8 +154,9 @@ if __name__ == "__main__":
     chemin = resolution_labyrinthe(depart,but,carte)
             
     afficher_carte_couleur(map_distance,chemin)
-    
-    # Graphique des moyennes des longueurs des chemins solutions
+    """
+       Code ci-dessous à décommenter si on veut afficher le graphique des moyennes des longueurs des chemins solutions
+    """
     # N_values = [8, 16, 32, 64, 128, 256, 512]
     # moyennes = evolution_longueur_moyenne(N_values, nb_essais=10)
     
